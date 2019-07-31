@@ -89,6 +89,7 @@ def execute(sql, args, autocommit=True):
 
 # 这个函数主要是把查询字段计数 替换成sql识别的?
 # 比如说：insert into  `User` (`password`, `email`, `name`, `id`) values (?,?,?,?)  看到了么 后面这四个问号
+# join函数用来做字符之间的连接：return(','.join(lol))，指的是在lol中的字符都用逗号相连
 def create_args_string(num):
     lol = []
     for n in range(num):
@@ -342,10 +343,9 @@ class Model(dict, metaclass=ModelMetaclass):
         rows = yield from execute(self.__delete__, args)
         if rows != 1:
             logging.warning('failed to delete by primary key: affected rows: %s' % rows)
-
 """
 if __name__ == "__main__":  # 一个类自带前后都有双下划线的方法，在子类继承该类的时候，这些方法会自动调用，比如__init__
-    class User2(Model):  # 虽然User类乍看没有参数传入，但实际上，User类继承Model类，Model类又继承dict类，所以User类的实例可以传入关键字参数
+    class User(Model):  # 虽然User类乍看没有参数传入，但实际上，User类继承Model类，Model类又继承dict类，所以User类的实例可以传入关键字参数
         id = IntegerField('id', primary_key=True)  # 主键为id， tablename为User，即类名
         name = StringField('name')
         email = StringField('email')
@@ -359,11 +359,11 @@ if __name__ == "__main__":  # 一个类自带前后都有双下划线的方法�
     # 创建实例
     @asyncio.coroutine
     def test():
-        yield from create_pool(loop=loop, host='localhost', port=3306, user='root', password='Limin123?', db='test')
-        # user = User2(id=2, name='Tom', email='slysly759@gmail.com', password='12345')
-        r = yield from User2.findAll()
+        yield from create_pool(loop=loop, host='localhost', port=3306, user='root', password='123456', db='blog')
+        #user = User(id=1, name='Tom', email='slysly759@gmail.com', password='12345')
+        r = yield from User.findAll()
         print(r)
-        # yield from user.save()
+        #yield from user.save()
         # ield from user.update()
         # yield from user.delete()
         # r = yield from User2.find(8)
@@ -379,6 +379,5 @@ if __name__ == "__main__":  # 一个类自带前后都有双下划线的方法�
     loop.close()
     if loop.is_closed():
         sys.exit(0)
-
-
 """
+
